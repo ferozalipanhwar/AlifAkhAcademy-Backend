@@ -5,11 +5,11 @@ import connectDB from "./config/db.js";
 import { default as authRoutes } from "./routes/authRoutes.js";
 import Blog from "./routes/blogRoutes.js";
 import contactRoutes from "./routes/contactsRoutes.js";
+import courseUnrollmentRoutes from "./routes/courseEnrollmentRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
-
 dotenv.config();
 connectDB(); // connect MongoDB
 
@@ -26,7 +26,7 @@ app.use("/api/courses",courseRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/blog", Blog);
-
+app.use("/api/course-enrollment", courseUnrollmentRoutes);
 
 
 app.use("/api/test", (req, res) => {
