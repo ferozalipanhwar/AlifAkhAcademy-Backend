@@ -1,6 +1,6 @@
 import express from "express";
 import { enrollCourse, getAllEnrollments } from "../controllers/courseEnrollmentController.js";
-import protect from "../middleware/authMiddleware.js";
+import { protect } from "../middleware/authMiddleware.js";
 import optionalAuth from "../middleware/optionalAuth.js";
 const router = express.Router();
 
