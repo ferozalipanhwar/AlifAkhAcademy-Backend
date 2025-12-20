@@ -2,21 +2,44 @@ import mongoose from "mongoose";
 
 const courseSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true },
-    duration: { type: String, required: true },
-    fee: { type: Number, required: true },
-    img: { type: String },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-    // ADD THIS
+    duration: {
+      type: String,
+      required: true,
+    },
+
+    description: {
+      type: String,
+      default: "",
+    },
+
+    fee: {
+      type: Number,
+      required: true,
+      default: 0,
+      min: 0,
+    },
+
+    img: {
+      type: String,
+    },
+
     teacherId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Teacher",
-      required: false,
+      required: true,
     },
   },
   { timestamps: true }
 );
 
 // avoid overwrite error
-const Course = mongoose.models.Course || mongoose.model("Course", courseSchema);
+const Course =
+  mongoose.models.Course || mongoose.model("Course", courseSchema);
+
 export default Course;
