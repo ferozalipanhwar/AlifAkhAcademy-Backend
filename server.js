@@ -9,6 +9,7 @@ import courseUnrollmentRoutes from "./routes/courseEnrollmentRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
+import testRoutes from "./routes/testRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 dotenv.config();
 connectDB(); // connect MongoDB
@@ -27,6 +28,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/blog", Blog);
 app.use("/api/course-enrollment", courseUnrollmentRoutes);
+app.use("/api/tests", testRoutes);
+
 
 
 app.use("/api/test", (req, res) => {
