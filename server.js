@@ -2,8 +2,10 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import connectDB from "./config/db.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import { default as authRoutes } from "./routes/authRoutes.js";
 import Blog from "./routes/blogRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
 import contactRoutes from "./routes/contactsRoutes.js";
 import courseUnrollmentRoutes from "./routes/courseEnrollmentRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
@@ -11,6 +13,7 @@ import studentRoutes from "./routes/studentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
 import testRoutes from "./routes/testRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+
 dotenv.config();
 connectDB(); // connect MongoDB
 
@@ -29,6 +32,9 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/blog", Blog);
 app.use("/api/course-enrollment", courseUnrollmentRoutes);
 app.use("/api/tests", testRoutes);
+app.use("/api/admin-tests", adminRoutes);
+
+app.use("/api/chat", chatRoutes);
 
 
 
