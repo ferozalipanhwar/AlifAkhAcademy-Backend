@@ -9,11 +9,11 @@ import chatRoutes from "./routes/chatRoutes.js";
 import contactRoutes from "./routes/contactsRoutes.js";
 import courseUnrollmentRoutes from "./routes/courseEnrollmentRoutes.js";
 import courseRoutes from "./routes/courseRoutes.js";
+import prepRoutes from "./routes/prepRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
 import testRoutes from "./routes/testRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
-
 dotenv.config();
 connectDB(); // connect MongoDB
 
@@ -33,7 +33,7 @@ app.use("/api/blog", Blog);
 app.use("/api/course-enrollment", courseUnrollmentRoutes);
 app.use("/api/tests", testRoutes);
 app.use("/api/admin-tests", adminRoutes);
-
+app.use("/api/prep", prepRoutes);
 app.use("/api/chat", chatRoutes);
 
 
