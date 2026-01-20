@@ -132,3 +132,58 @@ export const myResults = async (req, res) => {
     res.status(500).json({ message: "Failed to load results" });
   }
 };
+
+
+export const verifyCertificate = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Check if ID format is valid (assuming MongoDB ObjectId)
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ 
+        valid: false, 
+        message: "Invalid Certificate ID format" 
+      });
+    }
+
+    // 2. Find the result
+    const result = await TestResult.findById(id)
+      .populate("userId", "name email") // Only fetch name/email
+      .populate("testId", "title");     // Only fetch title
+
+    // 3. Logic: Result must exist AND status must be PASS
+    if (!result) {
+      return res.status(404).json({ 
+        valid: false, 
+        message: "Certificate not found" 
+      });
+    }
+
+    // Check for Pass status (handle casing variations)
+    const status = result.status ? result.status.toUpperCase() : "";
+    if (status !== "PASS") {
+      return res.status(400).json({ 
+        valid: false, 
+        message: "This ID belongs to a test attempt that did not result in a certificate." 
+      });
+    }
+
+    // 4. Return success details
+    res.status(200).json({
+      valid: true,
+      data: {
+        studentName: result.userId?.name || "Unknown Student",
+        testTitle: result.testId?.title || "Unknown Test",
+        date: result.createdAt,
+        grade: result.grade,
+        score: result.score,
+        totalMarks: result.totalMarks,
+        certificateId: result._id
+      }
+    });
+
+  } catch (error) {
+    console.error("Verification Error:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};

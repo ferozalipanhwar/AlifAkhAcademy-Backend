@@ -4,7 +4,8 @@ import {
   getTestsByCategory,
   myResults,
   startTest,
-  submitTest
+  submitTest,
+  verifyCertificate
 } from "../controllers/testController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -16,5 +17,5 @@ router.get("/start/:testId", startTest);
 router.post("/submit",protect, submitTest);
 router.get("/my-results/",protect, myResults);
 
-
+router.get("/verify-certificate/:id", verifyCertificate);
 export default router;
