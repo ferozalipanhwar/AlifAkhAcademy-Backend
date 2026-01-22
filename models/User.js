@@ -6,6 +6,11 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   isAdmin: { type: Boolean, default: false }, // <-- new field
+  studentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Student",
+    
+  },
 });
 
 // Hash password before saving

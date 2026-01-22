@@ -2,15 +2,13 @@ import mongoose from "mongoose";
 
 const studentSchema = new mongoose.Schema(
   {
-    fullname: {
-      type: String,
+    // Link the Student record to a User
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+    // Link the Student record to a Course
     courseId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
