@@ -118,3 +118,35 @@ export const deleteQuestion = async (req, res) => {
     res.status(500).json({ message: "Delete failed" });
   }
 };
+
+
+export const bulkUploadQuestions = async (req, res) => {
+  try {
+    const { testId, questions } = req.body;
+
+    if (!testId || !questions || !Array.isArray(questions)) {
+      return res.status(400).json({ message: "Test ID and Questions Array are required." });
+    }
+
+    // Map through questions to add the testId to each object
+    const formattedQuestions = questions.map((q) => ({
+      testId: testId,
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.correctAnswer, // Ensure JSON uses this exact key
+      marks: q.marks || 1 // Default marks if missing
+    }));
+
+    // Insert all at once
+    await Question.insertMany(formattedQuestions);
+
+    res.status(201).json({ 
+      message: "Bulk upload successful", 
+      count: formattedQuestions.length 
+    });
+
+  } catch (error) {
+    console.error("Bulk Upload Error:", error);
+    res.status(500).json({ message: "Failed to upload questions", error: error.message });
+  }
+};

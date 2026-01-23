@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  bulkUploadQuestions,
   createCategory,
   createQuestion,
   createTest,
@@ -31,5 +32,5 @@ router.delete("/test/:id", deleteTest);
 router.post("/question", createQuestion);
 router.put("/question/:id", updateQuestion);
 router.delete("/question/:id", deleteQuestion);
-
+router.post("/bulk-upload", bulkUploadQuestions); 
 export default router;
