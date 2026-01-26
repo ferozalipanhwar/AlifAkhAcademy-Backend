@@ -13,9 +13,9 @@ const router = express.Router();
 
 router.get("/categories", getCategories);
 router.get("/category/:categoryId", getTestsByCategory);
-router.get("/start/:testId", startTest);
-router.post("/submit",protect, submitTest);
-router.get("/my-results/",protect, myResults);
+router.get("/start/:testId", protect, startTest);
+router.post("/submit", protect, submitTest);
+router.get("/my-results/", protect, myResults);
 
 router.get("/verify-certificate/:id", verifyCertificate);
 export default router;
