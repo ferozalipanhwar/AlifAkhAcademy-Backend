@@ -187,3 +187,18 @@ export const verifyCertificate = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+//get Attempted Tests by admin
+export const getAttemptTests=async(req,res)=>{
+  try{
+    const attempts=await TestAttempt.find()
+    .populate("testId","title")
+    .populate("userId","name email")
+    .sort({ createdAt: -1 });
+
+    res.status(200).json(attempts);
+  }catch(err){
+    console.error("getAttemptTests ERROR:", err);
+    res.status(500).json({ message: "Failed to load attempted tests" });
+  }
+}
