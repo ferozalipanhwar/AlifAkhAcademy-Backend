@@ -150,3 +150,77 @@ export const bulkUploadQuestions = async (req, res) => {
     res.status(500).json({ message: "Failed to upload questions", error: error.message });
   }
 };
+
+import Lecture from "../models/Lecture.js";
+
+// --- LECTURE MANAGEMENT ---
+
+// 1. Add Lecture
+export const addLecture = async (req, res) => {
+  try {
+    const lecture = await Lecture.create(req.body);
+    res.status(201).json({ message: "Lecture added successfully", lecture });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to add lecture", error: err.message });
+  }
+};
+
+// 2. Update Lecture
+export const updateLecture = async (req, res) => {
+  try {
+    const updatedLecture = await Lecture.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body },
+      { new: true }
+    );
+    res.status(200).json(updatedLecture);
+  } catch (err) {
+    res.status(500).json({ message: "Update failed", error: err.message });
+  }
+};
+
+// 3. Delete Lecture
+export const deleteLecture = async (req, res) => {
+  try {
+    await Lecture.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Lecture has been deleted." });
+  } catch (err) {
+    res.status(500).json({ message: "Delete failed", error: err.message });
+  }
+};
+
+// 4. Lecture Analytics (Basic)
+export const getLectureStats = async (req, res) => {
+  try {
+    const stats = await Lecture.aggregate([
+      {
+        $group: {
+          _id: "$courseId",
+          totalLectures: { $sum: 1 },
+          avgDuration: { $avg: { $toDouble: "$duration" } } // Agar duration number mein ho
+        }
+      }
+    ]);
+    res.status(200).json(stats);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+export const getLecturesByCourse  = async (req, res) => {
+  try {
+    const { courseId } = req.params; // <--- Ye ID URL se aani chahiye
+
+    // ⚠️ GHALTI YAHAN HOTI HAI: Agar courseId nahi mili to ye sab fetch karega
+    if (!courseId) {
+        return res.status(400).json({ message: "Course ID is required" });
+    }
+
+    // Sirf us specific course ke lectures dhundein
+    const lectures = await Lecture.find({ courseId: courseId }).sort({ order: 1 });
+
+    res.status(200).json(lectures);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
+};

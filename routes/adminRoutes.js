@@ -1,13 +1,18 @@
 import express from "express";
 import {
+  addLecture,
   bulkUploadQuestions,
   createCategory,
   createQuestion,
   createTest,
   deleteCategory,
+  deleteLecture,
   deleteQuestion,
   deleteTest,
+  getLecturesByCourse,
+  getLectureStats,
   updateCategory,
+  updateLecture,
   updateQuestion,
   updateTest,
 } from "../controllers/adminController.js";
@@ -33,4 +38,15 @@ router.post("/question", createQuestion);
 router.put("/question/:id", updateQuestion);
 router.delete("/question/:id", deleteQuestion);
 router.post("/bulk-upload", bulkUploadQuestions); 
+
+
+
+// ... existing routes ...
+
+// Lecture Routes
+router.get("/lectures/:courseId", getLecturesByCourse); // Get all lectures for a course
+router.post("/lecture", addLecture);             // Create
+router.put("/lecture/:id", updateLecture);       // Update
+router.delete("/lecture/:id", deleteLecture);    // Delete
+router.get("/lecture/stats", getLectureStats);   // Analytics
 export default router;

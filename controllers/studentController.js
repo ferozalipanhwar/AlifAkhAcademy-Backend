@@ -1,4 +1,5 @@
 import Course from "../models/Course.js";
+import Lecture from "../models/Lecture.js";
 import Student from "../models/student.js";
 import User from "../models/User.js";
 
@@ -80,23 +81,41 @@ export const getMyCourses = async (req, res) => {
     res.status(500).json(err);
   }
 };
-// 2. Play Course (Secure Endpoint)
+
+// 2. Play Course (Secure Endpoint) - Updated for multiple lectures
 export const playCourse = async (req, res) => {
   try {
     const { courseId, userId } = req.params;
 
-    // SECURITY CHECK: Does an enrollment exist for this user & course?
+    // 1. SECURITY CHECK: Enrollment check karein
     const enrollment = await Student.findOne({ userId, courseId });
 
     if (!enrollment) {
-      return res.status(403).json({ message: "Access Denied: You are not enrolled." });
+      return res.status(403).json({ 
+        message: "Access Denied: You are not enrolled in this course." 
+      });
     }
 
-    // If enrolled, fetch the full course details (including video URL)
-    const course = await Course.findById(courseId);
-    res.status(200).json(course);
+    // 2. Fetch Course Details (with Teacher Info)
+    const course = await Course.findById(courseId).populate('teacherId', 'fullname');
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found." });
+    }
+
+    // 3. Fetch ALL lectures for this specific course
+    // .sort({ order: 1 }) ensure karta hai ke videos sequence (1,2,3) mein aayein
+    const lectures = await Lecture.find({ courseId: courseId }).sort({ order: 1 });
+
+    // 4. Combine karke Response bhein
+    // Hum "topics" key use kar rahe hain kyunki aapka frontend "course.topics" mang raha hai
+    res.status(200).json({
+      ...course._doc,
+      topics: lectures 
+    });
 
   } catch (err) {
-    res.status(500).json(err);
+    console.error("PlayCourse Error:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
   }
 };

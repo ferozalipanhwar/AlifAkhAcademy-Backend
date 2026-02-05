@@ -14,6 +14,6 @@ router.post("/add", protect, admin, addStudent);
 router.get("/", getStudents);
 router.delete("/:id", protect, admin, deleteStudent);
 router.get("/my-courses/:userId", getMyCourses);
-router.get("/play-course/:courseId/:userId", playCourse);
+router.get("/play-course/:courseId/:userId", protect, playCourse);
 
 export default router;
