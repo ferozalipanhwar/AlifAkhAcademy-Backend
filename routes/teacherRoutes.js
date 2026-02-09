@@ -1,10 +1,12 @@
 import express from "express";
 import {
   addTeacher,
+  applyForTeacher,
   deleteTeacher,
   getTeachers,
-  updateTeacher,
+  updateTeacher
 } from "../controllers/teacherController.js";
+
 
 import { admin, protect } from "../middleware/authMiddleware.js";
 import upload from "../middleware/upload.js";
@@ -17,5 +19,14 @@ router.put("/:id", protect, admin, upload.single("img"), updateTeacher ); //upad
 
 router.get("/", getTeachers);
 router.delete("/:id", protect, admin, deleteTeacher);
+
+
+
+
+
+
+router.post('/apply', protect, applyForTeacher);
+
+
 
 export default router;

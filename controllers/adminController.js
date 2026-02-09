@@ -1,7 +1,9 @@
+import Lecture from "../models/Lecture.js";
 import Question from "../models/Question.js";
+import TeacherApplication from "../models/TeacherApplication.js";
 import Test from "../models/Test.js";
 import TestCategory from "../models/TestCategory.js";
-
+import User from "../models/User.js";
 /* ================= CATEGORY MANAGEMENT ================= */
 
 // @desc    Create a Category
@@ -151,7 +153,6 @@ export const bulkUploadQuestions = async (req, res) => {
   }
 };
 
-import Lecture from "../models/Lecture.js";
 
 // --- LECTURE MANAGEMENT ---
 
@@ -222,5 +223,57 @@ export const getLecturesByCourse  = async (req, res) => {
     res.status(200).json(lectures);
   } catch (error) {
     res.status(500).json({ message: "Server Error", error });
+  }
+};
+
+
+// @desc    Get all teacher applications
+// @route   GET /api/admin/applications
+// @access  Private (Admin only)
+export const getAllApplications = async (req, res) => {
+  try {
+    const applications = await TeacherApplication.find().sort({ createdAt: -1 });
+    res.json(applications);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// @desc    Approve or Reject Application
+// @route   PUT /api/admin/applications/:id
+// @access  Private (Admin only)
+export const updateApplicationStatus = async (req, res) => {
+  try {
+    const { status } = req.body; // 'approved' or 'rejected'
+    const applicationId = req.params.id;
+
+    if (!['approved', 'rejected'].includes(status)) {
+      return res.status(400).json({ message: "Invalid status update" });
+    }
+
+    // 1. Find Application
+    const application = await TeacherApplication.findById(applicationId);
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    // 2. Update Status
+    application.status = status;
+    await application.save();
+
+    // 3. If Approved, Upgrade User Role
+    if (status === 'approved') {
+      const user = await User.findById(application.userId);
+      if (user) {
+        user.role = 'teacher'; // OR user.isAdmin = false; user.isTeacher = true; based on your schema
+        await user.save();
+      }
+    }
+
+    res.json({ message: `Application has been ${status}`, application });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
   }
 };

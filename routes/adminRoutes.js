@@ -9,12 +9,14 @@ import {
   deleteLecture,
   deleteQuestion,
   deleteTest,
+  getAllApplications,
   getLecturesByCourse,
   getLectureStats,
+  updateApplicationStatus,
   updateCategory,
   updateLecture,
   updateQuestion,
-  updateTest,
+  updateTest
 } from "../controllers/adminController.js";
 import { admin, protect } from "../middleware/authMiddleware.js";
 
@@ -41,7 +43,13 @@ router.post("/bulk-upload", bulkUploadQuestions);
 
 
 
-// ... existing routes ...
+
+router.get('/applications', getAllApplications);
+router.put('/applications/:id',updateApplicationStatus);
+
+
+
+
 
 // Lecture Routes
 router.get("/lectures/:courseId", getLecturesByCourse); // Get all lectures for a course

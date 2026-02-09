@@ -1,4 +1,5 @@
 import Teacher from "../models/Teacher.js";
+import TeacherApplication from "../models/TeacherApplication.js";
 
 // ADD Teacher
 export const addTeacher = async (req, res) => {
@@ -74,6 +75,42 @@ export const updateTeacher = async (req, res) => {
     res.status(200).json(updatedTeacher);
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+
+// @desc    Submit Teacher Application
+// @route   POST /api/teachers/apply
+// @access  Private (Student only)
+export const applyForTeacher = async (req, res) => {
+  try {
+    const { fullname, email, qualification, experience, subject, portfolio, bio } = req.body;
+
+    // 1. Check if user has already applied
+    const existingApplication = await TeacherApplication.findOne({ userId: req.user.id });
+    if (existingApplication) {
+      return res.status(400).json({ message: "You have already submitted an application." });
+    }
+
+    // 2. Create Application
+    const application = new TeacherApplication({
+      userId: req.user.id,
+      fullname,
+      email,
+      qualification,
+      experience,
+      subject,
+      portfolio,
+      bio
+    });
+
+    await application.save();
+
+    res.status(201).json({ message: "Application submitted successfully! Please wait for admin approval." });
+
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 };
